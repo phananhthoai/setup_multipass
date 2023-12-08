@@ -1,0 +1,218 @@
+version: "3.8"
+services:
+  backends:
+    image: harbor.elofun.net/vds-ngay-vang/backends@sha256:5f72353faddf7931ee2b0c7a805e6b55c0cf21ff0719873183d0969b1296ba07
+    networks:
+      - main
+    environment:
+      DATABASE_PROVIDER: "mysql"
+      DATABASE_URL: "mysql://dev:elofun@mysql:3306/vds?connection_limit=30"
+      DEBUG_LOG: "true"
+      STAGE: "dev"
+      ALLOW_ANONYMOUS: "true"
+      ELOFUN_NATS_URI: "nats://nats:4222"
+      ELOFUN_NATS_TOKEN: "f384b575-6df5-46c1-8f25-bb874661db40"
+      REDIS_CLUSTER_URLS: "redis://redis-node-0:6379;redis://redis-node-1:6379;redis://redis-node-2:6379;redis://redis-node-3:6379;redis://redis-node-4:6379;redis://redis-node-5:6379"
+      REDIS_PASSWORD: "elofun"
+      ELOFUN_ZIPKIN_URI: "url_zipkin"
+      NOTIFICATION_API_ENDPOINT: "http://10.255.63.201:8881/notify/v2/app/notification"
+      NOTIFICATION_TOKEN: "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIwMUVCMDlEUFJWU1o5NTBQV0ExOTFRNkRGNiIsImF1ZCI6IlRISVJEX1BBUlRZIiwidXNyIjoiR0FNRV9URVRfMjAyMSIsInJvbGVzIjpbIlBVU0hfTk9USUZZIl0sInR5cGUiOiIzUkRfVE9LRU4iLCJpYXQiOjE2MTE4MTY0MDIsImV4cCI6MjI0Mjk1NTQ0MiwianRpIjoiMDFFWDNWV1o1S1pGSDM0MjVKSDhaWFRLMjMifQ.aTYMpS93KP2BzTtkMex0sPG3jSf2WU4SLYxL5t8r0ILHPTYphTtViK3GnA4LTRvlReOuu/t1E3dP9hEH7hVwZ9VPkpa7+rqG84kEyzS7iX+TTVorhRc1VZFqXDTDO3XPUH+i5smq8/C5q2+QDz9qYIR8H1TUkm8PfFcN3+y3Giq3eQHlcY5SbzUFEPBC7MyrsdEU2x0B4mKu6yPVE52nM2VZMJhE8OtmWInIzf1p1BNq6DcitfC8UIewlfNBSC4JNCletmLUG16e6+JSwjSr/RQ0rx+iX80Keft3IvUiFMW2EIlmihN+arbtVEuJIdmaG6zgArbPrOxYLpTn6zfuZQ=="
+      ADD_MONEY_API_ENDPOINT: "http://10.60.105.3:8080/PartnerWS/PartnerAPI?wsdl"
+      SECURE_PUBLIC_KEY_VIETTEL: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCW0VomTHsZ4VoNCWI4L74ief91bNKeBtbngsAO33DKnM6YY645KhJsw4rYaNllGTpO9iF7vqPVxcQ4dokXvlylo+niE7oUVxPJ1htQs+pt5fcDFZl0QMR3oVUAETmJcBJ368O1hKMSsssf2klBMJJpg8fg49IofEHjm5qkGPqkCQIDAQAB"
+      SECURE_PUBLIC_KEY_ELF: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCt/qwvLBr+WaF2wWS20d1o+FJIkCRBlC43LfXhoJrAivNobGPL1oQDlv7qSofAvuV7DZJjOPq5VdhQtOjNAQGKPtMcsc5IGklKUhLezXP/3x5SD+JAaF9Qrnknqm6jvHVHPjAwTd8PWwZLdhbo/jlObfvUNRKc/+/LrFt/H2F8qwIDAQAB"
+      SECURE_PRIVATE_KEY_ELF: "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAK3+rC8sGv5ZoXbBZLbR3Wj4UkiQJEGULjct9eGgmsCK82hsY8vWhAOW/upKh8C+5XsNkmM4+rlV2FC06M0BAYo+0xyxzkgaSUpSEt7Nc//fHlIP4kBoX1CueSeqbqO8dUc+MDBN3w9bBkt2Fuj+OU5t+9Q1Epz/78usW38fYXyrAgMBAAECgYBMMib9UXdQw7et5etRFH69pWGDXXxDK71BdOMkt8yNXUxTAoSBk6OkXs+rko/4nKCqTrs4sI878pgUX+VDQZmGVDmIfCVwWkwZT4Tu4TTJbCgC/WSEGo1Am+kPfXYPD13V6Ue3C42Gd6ZttCnwoyGohxVwXExeMaKNJ3sJd6eNAQJBANTZLCk/G2vPZidKarAMrwaq1IPt7SQ8z6/izso8/3k/8eCxuvTTVQyzQZnyg/26uDnzwDgNuVIwr8n6LAM6GAsCQQDRRQC3iC1KWwg07oCMQzhurzm1IgRsQxYyDs5qwlEwJcQM/JUSybPoqmfH4SGzcSyfBEPtEFsdmEzs52ZIEPHhAkAE4aIopADd/RirqAJAXVoaPgq3p9o7bYWZ1ArICpQVVMkYTRsriDk4HFhRzoUGaaTV92geIPpyDxnI+QrPXCK3AkAeJyYiS8HS2+kDz3XAQBNKh372JW+jtcrl7ZI6ecM+/8IO6PoF2gBNPvhzKXI0q9L1GqU67EdkrUQwQmtPaPmhAkB+3qySjhfQ3PYJebxn9WwKHkRZSh89qGYpUB7E7/Max8fXIwxM3ZXF/fjPSkKwdBNFcGiaiFcXl07DpzulYDQW"
+      BLACKLIST_API_ENDPOINT: "http://10.255.63.201:8881/game/game2021-api/v1/private/blackList"
+      BYPASS_BLACKLIST: "blacklist"
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.services == true
+  cms:
+    image: harbor.elofun.net/vds-ngay-vang/cms@sha256:95d5afba6134391a074b74bc550c2527cbc8e2357f70f0b4cc4de8428478047f
+    networks:
+      - main
+  lb:
+    image: harbor.elofun.net/core/nginx-proxy:0.0.1
+    networks:
+      - main
+      - traefik_public
+    environment:
+      CHECK_PROXY_UPSTREAM: 0
+      PROXY_MAP: |
+        / => vds-ngay-vang_web/
+        /wsgw/ => vds-ngay-vang_wsgw/
+        /api/ => vds-ngay-vang_backends/
+        /cms/ => vds-ngay-vang_cms/
+    deploy:
+      mode: global
+      labels:
+        - ingress.host=vds-ngay-vang.hongduydevops.id.vn
+  mysql:
+    image: mariadb:10.7
+    networks:
+      - main
+    environment:
+      - MYSQL_ROOT_PASSWORD=elofun
+      - MYSQL_PASSWORD=elofun
+      - MYSQL_USER=dev
+      - MYSQL_DATABASE=vds
+    volumes:
+      - db-vds-ngay-vang:/var/lib/mysql
+    deploy:
+      placement:
+        constraints:
+          - node.labels.mysql == true
+  nats:
+    image: nats
+    networks:
+      - main
+  redis-0:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-0:/bitnami/redis/data
+    depends_on:
+      - redis-node-1
+      - redis-node-2
+      - redis-node-3
+      - redis-node-4
+      - redis-node-5
+    environment:
+      # - 'REDIS_PASSWORD=elofun'
+      # - 'REDISCLI_AUTH=elofun'
+      - 'REDIS_CLUSTER_REPLICAS=1'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'REDIS_CLUSTER_CREATOR=yes'
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+    networks:
+      - main
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == true
+  redis-1:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-1:/bitnami/redis/data
+    environment:
+      # - 'REDIS_PASSWORD=elofun'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+    networks:
+      - main
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == true
+  redis-2:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-2:/bitnami/redis/data
+    environment:
+      # - 'REDIS_PASSWORD=elofun'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+    networks:
+      - main
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == true
+  redis-3:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-3:/bitnami/redis/data
+    environment:
+      # - 'REDIS_PASSWORD=elofun'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+    networks:
+      - main
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == true
+  redis-4:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-4:/bitnami/redis/data
+    environment:
+      # - 'REDIS_PASSWORD=elofun'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+    networks:
+      - main
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == true
+  redis-5:
+    image: docker.io/bitnami/redis-cluster:7.0
+    volumes:
+      - redis-cluster_data-5:/bitnami/redis/data
+    environment:
+      # - 'REDIS_PASSWORD=elofun'
+      - 'REDIS_NODES=redis-node-0 redis-node-1 redis-node-2 redis-node-3 redis-node-4 redis-node-5'
+      - 'ALLOW_EMPTY_PASSWORD=yes'
+    networks:
+      - main
+    deploy:
+      placement:
+        constraints:
+          - node.labels.redis == true
+  scheduler:
+    image: harbor.elofun.net/vds-ngay-vang/backends@sha256:5f72353faddf7931ee2b0c7a805e6b55c0cf21ff0719873183d0969b1296ba07
+    networks:
+      - main
+    #command: ["sleep","inf"]
+    environment:
+      DATABASE_PROVIDER: "mysql"
+      DATABASE_URL: "mysql://dev:elofun@mysql:3306/vds?connection_limit=30"
+      DEBUG_LOG: "true"
+      STAGE: "dev"
+      ALLOW_ANONYMOUS: "true"
+      ELOFUN_NATS_URI: "nats://nats:4222"
+      ELOFUN_NATS_TOKEN: "f384b575-6df5-46c1-8f25-bb874661db40"
+      REDIS_CLUSTER_URLS: "redis://redis-node-0:6379;redis://redis-node-1:6379;redis://redis-node-2:6379;redis://redis-node-3:6379;redis://redis-node-4:6379;redis://redis-node-5:6379"
+      REDIS_PASSWORD: "elofun"
+      ELOFUN_ZIPKIN_URI: "url_zipkin"
+      NOTIFICATION_API_ENDPOINT: "http://10.255.63.201:8881/notify/v2/app/notification"
+      NOTIFICATION_TOKEN: "eyJhbGciOiJSUzI1NiJ9.eyJzdWIiOiIwMUVCMDlEUFJWU1o5NTBQV0ExOTFRNkRGNiIsImF1ZCI6IlRISVJEX1BBUlRZIiwidXNyIjoiR0FNRV9URVRfMjAyMSIsInJvbGVzIjpbIlBVU0hfTk9USUZZIl0sInR5cGUiOiIzUkRfVE9LRU4iLCJpYXQiOjE2MTE4MTY0MDIsImV4cCI6MjI0Mjk1NTQ0MiwianRpIjoiMDFFWDNWV1o1S1pGSDM0MjVKSDhaWFRLMjMifQ.aTYMpS93KP2BzTtkMex0sPG3jSf2WU4SLYxL5t8r0ILHPTYphTtViK3GnA4LTRvlReOuu/t1E3dP9hEH7hVwZ9VPkpa7+rqG84kEyzS7iX+TTVorhRc1VZFqXDTDO3XPUH+i5smq8/C5q2+QDz9qYIR8H1TUkm8PfFcN3+y3Giq3eQHlcY5SbzUFEPBC7MyrsdEU2x0B4mKu6yPVE52nM2VZMJhE8OtmWInIzf1p1BNq6DcitfC8UIewlfNBSC4JNCletmLUG16e6+JSwjSr/RQ0rx+iX80Keft3IvUiFMW2EIlmihN+arbtVEuJIdmaG6zgArbPrOxYLpTn6zfuZQ=="
+      ADD_MONEY_API_ENDPOINT: "http://10.60.105.3:8080/PartnerWS/PartnerAPI?wsdl"
+      SECURE_PUBLIC_KEY_VIETTEL: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCW0VomTHsZ4VoNCWI4L74ief91bNKeBtbngsAO33DKnM6YY645KhJsw4rYaNllGTpO9iF7vqPVxcQ4dokXvlylo+niE7oUVxPJ1htQs+pt5fcDFZl0QMR3oVUAETmJcBJ368O1hKMSsssf2klBMJJpg8fg49IofEHjm5qkGPqkCQIDAQAB"
+      SECURE_PUBLIC_KEY_ELF: "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCt/qwvLBr+WaF2wWS20d1o+FJIkCRBlC43LfXhoJrAivNobGPL1oQDlv7qSofAvuV7DZJjOPq5VdhQtOjNAQGKPtMcsc5IGklKUhLezXP/3x5SD+JAaF9Qrnknqm6jvHVHPjAwTd8PWwZLdhbo/jlObfvUNRKc/+/LrFt/H2F8qwIDAQAB"
+      SECURE_PRIVATE_KEY_ELF: "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAK3+rC8sGv5ZoXbBZLbR3Wj4UkiQJEGULjct9eGgmsCK82hsY8vWhAOW/upKh8C+5XsNkmM4+rlV2FC06M0BAYo+0xyxzkgaSUpSEt7Nc//fHlIP4kBoX1CueSeqbqO8dUc+MDBN3w9bBkt2Fuj+OU5t+9Q1Epz/78usW38fYXyrAgMBAAECgYBMMib9UXdQw7et5etRFH69pWGDXXxDK71BdOMkt8yNXUxTAoSBk6OkXs+rko/4nKCqTrs4sI878pgUX+VDQZmGVDmIfCVwWkwZT4Tu4TTJbCgC/WSEGo1Am+kPfXYPD13V6Ue3C42Gd6ZttCnwoyGohxVwXExeMaKNJ3sJd6eNAQJBANTZLCk/G2vPZidKarAMrwaq1IPt7SQ8z6/izso8/3k/8eCxuvTTVQyzQZnyg/26uDnzwDgNuVIwr8n6LAM6GAsCQQDRRQC3iC1KWwg07oCMQzhurzm1IgRsQxYyDs5qwlEwJcQM/JUSybPoqmfH4SGzcSyfBEPtEFsdmEzs52ZIEPHhAkAE4aIopADd/RirqAJAXVoaPgq3p9o7bYWZ1ArICpQVVMkYTRsriDk4HFhRzoUGaaTV92geIPpyDxnI+QrPXCK3AkAeJyYiS8HS2+kDz3XAQBNKh372JW+jtcrl7ZI6ecM+/8IO6PoF2gBNPvhzKXI0q9L1GqU67EdkrUQwQmtPaPmhAkB+3qySjhfQ3PYJebxn9WwKHkRZSh89qGYpUB7E7/Max8fXIwxM3ZXF/fjPSkKwdBNFcGiaiFcXl07DpzulYDQW"
+      BLACKLIST_API_ENDPOINT: "http://10.255.63.201:8881/game/game2021-api/v1/private/blackList"
+      BYPASS_BLACKLIST: "blacklist"
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.labels.services == true
+  web:
+    image: harbor.elofun.net/vds-ngay-vang/web@sha256:ad4f4c21b21adaf5ce305f2e990f6aeed4ad89ae8d8bd36ec471d9e595b1d56d
+    networks:
+      - main
+  wsgw:
+    image: harbor.elofun.net/vds-ngay-vang/wsgw@sha256:cb4ed2b7b5c4663020c062848b16d1adfbcec1fce454ebc3067e1154db359060
+    networks:
+      - main
+    environment:
+      ELOFUN_NATS_URI: nats://nats:4222
+      ELOFUN_NATS_TOKEN: "f384b575-6df5-46c1-8f25-bb874661db40"
+      REDIS_CLUSTER_URLS: "redis://redis-node-0:6379;redis://redis-node-1:6379;redis://redis-node-2:6379;redis://redis-node-3:6379;redis://redis-node-4:6379;redis://redis-node-5:6379"
+      REDIS_PASSWORD: "elofun"
+networks:
+  main: {}
+  traefik_public:
+    external: true
+volumes:
+  db-vds-ngay-vang: {}
+  redis-cluster_data-0: {}
+  redis-cluster_data-1: {}
+  redis-cluster_data-2: {}
+  redis-cluster_data-3: {}
+  redis-cluster_data-4: {}
+  redis-cluster_data-5: {}

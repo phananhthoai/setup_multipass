@@ -1,0 +1,83 @@
+version: "3.3"
+
+services:
+  dsock:
+      image: harbor.elofun.net/core/nginx-proxy:0.0.1
+      networks:
+        - sock
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock:ro
+      environment:
+        CONF: |
+          include /etc/nginx/modules-enabled/*.conf;
+          user root;
+          worker_processes auto;
+          events {
+            worker_connections 1024;
+            multi_accept on;
+          }
+          stream {
+            server {
+              listen 9000;
+              proxy_pass unix:/var/run/docker.sock;
+            }
+          }
+      deploy:
+        mode: global
+        placement:
+          constraints:
+            - node.role == manager
+  traefik:
+    image: traefik
+    hostname: "{{ .Node.Hostname }}"
+    command:
+      - --log.level=INFO
+      - --entrypoints.web.address=:80
+      - --entrypoints.webSecure.address=:443
+      - --entrypoints.webSecure.proxyprotocol.insecure
+      - --providers.docker=true
+      - --providers.docker.endpoint=tcp://dsock:9000
+      - --providers.docker.exposedbydefault=false
+      - --providers.docker.swarmmode=true
+      - --providers.docker.network=traefik_public
+      - --api
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --accesslog
+      - --entrypoints.web.http.redirections.entryPoint.to=webSecure
+      #- --entrypoints.api.http.redirections.entryPoint.to=webSecure
+      - --certificatesresolvers.myresolver.acme.tlschallenge=true
+      - --certificatesresolvers.myresolver.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.myresolver.acme.email=duy.le@elofun.com
+      - --certificatesresolvers.myresolver.acme.storage=acme.json
+    ports:
+      - target: 80
+        published: 80
+        protocol: tcp
+        mode: host
+      - target: 443
+        published: 443
+        protocol: tcp
+        mode: host
+      - "8080:8080"
+    networks:
+      - traefik_public
+      - sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/duy/thuctap11/letsencrypt:/letsencrypt
+    deploy:
+      mode: global
+      labels:
+        - traefik.enable=true
+        - traefik.http.routers.traefik.rule=Host(`traefik.hongduydevops.id.vn`)
+        - traefik.http.routers.traefik.service=traefik
+        - traefik.http.services.traefik.loadbalancer.server.port=8080
+        - traefik.http.routers.traefik.entrypoints=webSecure
+        #- traefik.http.routers.traefik.entrypoints=web
+        #- traefik.http.routers.traefik.tls
+        - traefik.http.routers.traefik.tls.certresolver=myresolver
+networks:
+  traefik_public:
+    external: true
+  sock:
